@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Usuários</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Poppins, Arial, sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      background: radial-gradient(circle at center, #ff914d, #d75b00 60%, #3b1a00 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 40px;
+      color: white;
+    }
+
+    .btn {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 15px 25px;
+      border-radius: 10px;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      margin: 10px;
+      transition: 0.3s;
+      backdrop-filter: blur(3px);
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+
+    .btn:hover {
+      background: rgba(255,255,255,0.25);
+      transform: scale(1.05);
+    }
+
+    .user-list {
+      width: 90%;
+      max-width: 500px;
+      margin-top: 30px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 20px;
+      backdrop-filter: blur(3px);
+      box-shadow: 0 0 20px rgba(0,0,0,0.25);
+    }
+
+    .user-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 15px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+
+    .remove {
+      cursor: pointer;
+      background: red;
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    .remove:hover {
+      background: darkred;
+      transform: scale(1.1);
+    }
+
+    h1 {
+      font-size: 45px;
+      font-weight: 900;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px rgba(0,0,0,0.4);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>USUÁRIOS</h1>
+
+  <div class="btn" onclick="window.location.href='index.html'">⬅ Voltar ao Menu</div>
+  <div class="btn" onclick="addUser()">➕ Criar Novo Usuário</div>
+
+  <div class="user-list" id="userList">
+    <!-- Usuários aparecem aqui -->
+  </div>
+
+<script>
+  // ----------- CARREGAR OS USUÁRIOS -----------
+  function loadUsers() {
+    let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+    const box = document.getElementById("userList");
+    box.innerHTML = "";
+
+    if (usuarios.length === 0) {
+      box.innerHTML = "<p style='opacity:0.7;'>Nenhum usuário cadastrado.</p>";
+      return;
+    }
+
+    usuarios.forEach((user, index) => {
+      const div = document.createElement("div");
+      div.className = "user-item";
+      div.innerHTML = `
+        <span>${user}</span>
+        <span class="remove" onclick="removeUser(${index})">X</span>
+      `;
+      box.appendChild(div);
+    });
+  }
+
+  // ----------- ADICIONAR USUÁRIO -----------
+  function addUser() {
+    let nome = prompt("Digite o nome do usuário:");
+
+    if (!nome || nome.trim() === "") return;
+
+    let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+    usuarios.push(nome.trim());
+
+    localStorage.setItem("usuarios", JSON.stringify(usuarios));
+    loadUsers();
+  }
+
+  // ----------- REMOVER USUÁRIO -----------
+  function removeUser(i) {
+    let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+    usuarios.splice(i, 1);
+
+    localStorage.setItem("usuarios", JSON.stringify(usuarios));
+    loadUsers();
+  }
+
+  loadUsers();
+</script>
+
+</body>
+</html>

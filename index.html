@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu de Jogo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<style>
+    * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+  background: radial-gradient(circle at center, #ff914d, #d75b00 60%, #3b1a00 100%);
+}
+
+/* Fundo com partículas piscando */
+.particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.particles::before, .particles::after {
+  content: "";
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+  animation: blink 2s infinite ease-in-out;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0.1; }
+  50% { opacity: 1; }
+}
+
+/* Gera várias partículas via pseudo-elementos */
+.particles {
+  background-image:
+    radial-gradient(white 1px, transparent 1px),
+    radial-gradient(white 1px, transparent 1px),
+    radial-gradient(white 1px, transparent 1px);
+  background-size: 80px 80px, 120px 120px, 200px 200px;
+  background-position: 0 0, 40px 60px, 80px 20px;
+  opacity: 0.2;
+  animation: flicker 5s infinite alternate;
+}
+
+@keyframes flicker {
+  from { opacity: 0.15; }
+  to { opacity: 0.4; }
+}
+
+/* Container central */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 90%;
+  max-width: 900px;
+  z-index: 1;
+}
+
+.top {
+  display: flex;
+  gap: 20px;
+}
+
+.bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* Botões */
+.box {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border-radius: 10px;
+  flex: 1;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  backdrop-filter: blur(3px);
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+
+.box:hover {
+  transform: scale(1.05);
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.jogar h1 {
+  font-size: 70px;
+  font-weight: 900;
+}
+
+.jogar .sub {
+  font-size: 80px;
+  opacity: 0.3;
+  margin-top: 10px;
+}
+
+.online h2 {
+  font-size: 30px;
+  font-weight: 900;
+}
+
+.online .sub {
+  font-size: 30px;
+  opacity: 0.5;
+  margin-top: 10px;
+}
+
+.small {
+  font-size: 35px;
+  font-weight: 900;
+  padding: 20px;
+}
+</style>
+<body>
+  <div class="particles"></div>
+
+  <div class="container">
+    <div class="top">
+      <div class="box jogar" onclick="window.location.href='classic.html'">
+        <h1>JOGAR</h1>
+        <p class="sub">Classic</p>
+      </div>
+      <div class="box online" onclick="window.location.href='online.html'">
+        <h2>ONLINE</h2>
+        <p class="sub">Em breve</p>
+      </div>
+    </div>
+
+    <div class="bottom">
+      <div class="box small" onclick="window.location.href='extras.html'">EXTRAS</div>
+      <div class="box small" onclick="window.location.href='users.html'">USUÁRIOS</div>
+    </div>
+  </div>
+
+  <script>
+    // Cria pequenas partículas piscando dinamicamente
+const particles = document.querySelector('.particles');
+
+for (let i = 0; i < 60; i++) {
+  const p = document.createElement('div');
+  p.classList.add('particle');
+  p.style.left = Math.random() * 100 + '%';
+  p.style.top = Math.random() * 100 + '%';
+  p.style.width = p.style.height = Math.random() * 3 + 'px';
+  p.style.animationDelay = Math.random() * 3 + 's';
+  particles.appendChild(p);
+}
+
+const style = document.createElement('style');
+style.innerHTML = `
+  .particle {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    opacity: 0;
+    animation: sparkle 2s infinite ease-in-out;
+  }
+
+  @keyframes sparkle {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+  }
+`;
+document.head.appendChild(style);
+
+  </script>
+</body>
+</html>
