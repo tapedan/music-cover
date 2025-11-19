@@ -83,11 +83,8 @@
     /* Painel principal (o card laranja grande das telas) */
     .panel {
       width: 100%;
-      background: linear-gradient(180deg, rgba(10, 10, 10, 0.48), rgba(5, 5, 5, 0.48));
       border-radius: 20px;
       padding: 34px;
-      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(0, 0, 0, 0.25);
       color: #fff;
       display: block;
     }
@@ -412,20 +409,19 @@
       }
 
       .covers {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 14px
+        grid-template-columns: repeat(4, 1fr);
       }
 
       .cover {
-        width: 46vw;
-        height: 46vw;
+        width: 16vw;
+        height: 16vw;
         max-width: 200px;
         max-height: 200px
       }
 
       #app {
-        margin: 18px;
-        padding: 12px
+        margin: 8px;
+        padding: 2px
       }
     }
 
@@ -451,6 +447,62 @@
   transform: scale(1.03);
 }
 
+/* Container para a capa vencedora após a votação */
+.winner-reveal {
+  display: flex; /* Flex para centralizar conteúdo */
+  flex-direction: column;
+  align-items: center;
+  gap: 20px; /* Espaço entre a capa e o resumo dos pontos */
+  padding: 20px 0;
+  width: 100%;
+}
+
+/* Estilo para a imagem centralizada */
+.winner-cover {
+  width: 200px;
+  max-width: 320px; /* Tamanho máximo em telas grandes */
+  aspect-ratio: 1 / 1; /* Garante que seja um quadrado */
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  background: #111;
+  box-shadow: 0 16px 50px rgba(255, 179, 58, 0.38); /* Sombra mais forte */
+  transition: transform .45s ease;
+  z-index: 10;
+}
+
+.winner-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Ocultar o grid de capas durante a revelação */
+.covers.hidden {
+    display: none;
+}
+
+/* Novo estilo para o bloco de jogadores que pontuaram */
+#winnerSummary {
+    padding: 10px 20px;
+    border-radius: 14px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    width: 100%;
+    max-width: 400px; /* Limita a largura para melhor visualização */
+}
+
+/* Responsividade: Diminui a capa em telas muito pequenas */
+@media (max-width: 480px) {
+  .winner-cover {
+    max-width: 250px;
+  }
+}
+
   </style>
 </head>
 
@@ -461,9 +513,7 @@
   <div class="bg" aria-hidden="true"></div>
 
   <div id="app" role="application" aria-label="Music Cover - Jogo de Votação">
-    <!-- MAIN (left) -->
     <div class="panel" id="leftPanel">
-      <!-- TELA INICIAL / START -->
       <header class="start-screen" id="startScreen" aria-live="polite">
         <div class="brand">
           <div class="logo">MC</div>
@@ -488,18 +538,14 @@
           </div>
         </div>
 
-        <div style="margin-top:6px;color:var(--muted);font-size:13px;">
-          Dica: clique numa capa para pré-visualizar — votes com números (1-4).
-        </div>
       </header>
 
-      <!-- JOGO -->
       <main class="game-area" id="gameArea" style="display:none">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;">
           <div class="status">
             <div class="left">
-              <div class="line" id="statusLine">Pronto</div>
-              <div class="small" id="roundInfo">Rodada 0 / 9</div>
+              <div class="line" id="statusLine"></div>
+              <div class="small" id="roundInfo">0 / 9</div>
             </div>
 
             <div class="progress" aria-hidden="true" title="Progresso">
@@ -508,41 +554,42 @@
           </div>
 
           <div style="display:flex;gap:8px;align-items:center">
-            <button class="btn btn--muted" id="pauseAudio">▮▮</button>
-            <button class="btn btn--muted" id="restartBtn">Reiniciar</button>
+            <button class="btn btn--muted" id="pauseAudio"></button>
+            <button class="btn btn--muted" id="restartBtn"></button>
           </div>
         </div>
 
+        <div id="revealArea" class="winner-reveal" style="display:none">
+          <div id="centralWinnerCover" class="winner-cover">
+            </div>
+          <div id="winnerSummary" class="small">
+             </div>
+        </div>
         <section class="covers" id="covers" aria-live="polite" aria-label="Capas do jogo">
-          <!-- Capas geradas aqui -->
-        </section>
+          </section>
 
         <div class="vote-panel" id="votePanel" style="display:none" role="region" aria-label="Painel de votação">
-          <div>
-            <div class="instruction" id="voteLine">Votação</div>
-            <div class="small" id="voteHint">Digite a posição da capa que você acha que é a correta</div>
+          <div style="text-align:center;">
+            <div style="font-size:20px; color:rgba(255,255,255,0.85);">É a vez de:</div>
+            <div class="instruction" id="voteLine" style="font-size:36px; font-weight:900; color:var(--accent); margin-top:8px;">Danilo</div>
           </div>
-
-          <div class="vote-input">
+          <div class="vote-input" style="height: 0; overflow: hidden; margin: 0; padding: 0;">
             <input id="voteInput" type="text" class="hidden-input"
               style="opacity:0;position:absolute;left:-9999px;width:0;height:0;border:0;padding:0;" inputmode="none"
               autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-            <button class="btn btn--primary" id="confirmVote">Confirmar</button>
+            <button class="btn btn--primary" id="confirmVote" style="display:none"></button>
           </div>
         </div>
 
-        <div class="results" id="results">
-          <div class="winner" id="winnerText">Resultado</div>
-          <div id="voteSummary" class="small">Resumo dos votos</div>
-          <div style="display:flex;gap:8px;justify-content:flex-end;">
-            <button class="btn btn--muted" id="nextRound" style="display:none">Próxima Rodada</button>
-            <button class="btn btn--primary" id="showScoresBtn">Ver Placar</button>
-          </div>
+        <div class="results" id="results" style="display:none; margin-top: 10px; width: 100%; justify-content: center;">
+            <div style="display:flex;gap:8px;justify-content:center;">
+              <button class="btn btn--primary" id="nextRound">Próxima Rodada</button>
+              <button class="btn btn--muted" id="showScoresBtn">Ver Placar</button>
+            </div>
         </div>
       </main>
     </div>
 
-    <!-- SIDEBAR (right) -->
     <aside class="sidebar">
       <div class="score-card panel" style="padding:14px;">
         <div class="score-header">
@@ -551,8 +598,7 @@
         </div>
 
         <div class="score-list" id="scoreList" aria-live="polite">
-          <!-- itens do placar -->
-        </div>
+          </div>
 
         <div style="display:flex;gap:8px;margin-top:12px;">
           <button class="btn btn--muted" id="resetScores">Zerar Placar</button>
@@ -571,7 +617,6 @@
     </aside>
   </div>
 
-  <!-- Modal final -->
   <div class="modal" id="finalModal" role="dialog" aria-modal="true" aria-labelledby="finalTitle" tabindex="-1">
     <div class="modal-inner">
       <div id="finalTitle" style="font-size:22px;font-weight:900;color:var(--accent);">Campeão</div>
@@ -583,7 +628,6 @@
     </div>
   </div>
 
-  <!-- SONS (use os seus caminhos) -->
   <audio id="bgMusic" loop src="musica_fundo.mp3"></audio>
   <audio id="fxVote" src="enter.ogg"></audio>
   <audio id="fxReveal" src="results.mp3"></audio>
@@ -592,6 +636,9 @@
   <audio id="fxClick" src="click.mp3"></audio>
 
   <script>
+    const revealArea = document.getElementById('revealArea');
+    const centralWinnerCover = document.getElementById('centralWinnerCover');
+    const winnerSummary = document.getElementById('winnerSummary'); // Novo elemento
     /* =========================
        Dados e estado do jogo
        ========================= */
@@ -876,7 +923,6 @@
         const c = document.createElement('div');
         c.className = 'cover';
         c.innerHTML = `
-          <span class="badge">${idx + 1}</span>
           <img src="${url}" alt="Capa ${idx + 1}" loading="lazy">
         `;
         c.addEventListener('click', () => {
@@ -893,12 +939,17 @@
     function nextRound() {
       resultsEl.style.display = 'none';
       votePanel.style.display = 'none';
+
+      revealArea.style.display = 'none'; // Esconde a área de revelação
+      coversEl.classList.remove('hidden'); // Reexibe o grid de capas
+      resultsEl.style.display = 'none';
+      votePanel.style.display = 'none';
+
       state.round++;
       if (state.round > state.totalRounds) return showFinalResults();
 
       setRoundInfo();
       updateProgress();
-      setStatus('Gerando capas e escolhendo música...');
       // escolhe música aleatória (se houver)
       const musica = MUSICAS[Math.floor(Math.random() * MUSICAS.length)] || audioBg.src;
       if (musica) { audioBg.src = musica; audioBg.play().catch(() => { }); }
@@ -910,7 +961,6 @@
 
       // pequena espera para fluidez
       setTimeout(() => {
-        setStatus('Iniciando votação');
         iniciarVotacao();
       }, 600);
     }
@@ -931,8 +981,8 @@
     function mostrarJogador() {
       const i = state.currentVotingIndex;
       const nome = state.playerNames[i];
-      voteLine.textContent = `É a vez de ${nome}`;
-      statusLine.textContent = `Jogador ${i + 1}: ${nome} votando`;
+      // Apenas seta o nome, o HTML/CSS faz o resto da estilização
+      voteLine.textContent = nome;
       voteInput.value = '';
       voteInput.focus();
     }
@@ -965,8 +1015,6 @@
        ========================= */
     function finalizarVotacao() {
       votePanel.style.display = 'none';
-      setStatus('Finalizando votação...');
-      // animação simples
       const msg = document.createElement('div');
       msg.textContent = 'FINALIZAÇÃO DA VOTAÇÃO';
       Object.assign(msg.style, {
@@ -978,60 +1026,63 @@
       setTimeout(() => { document.body.removeChild(msg); revealResults(); }, 1400);
     }
 
-    function revealResults() {
-      fxReveal.currentTime = 0; fxReveal.play().catch(() => { });
-      const votesThisRound = state.votes[state.round - 1] || [];
-      const totalCovers = state.covers.length;
-      const counts = new Array(totalCovers).fill(0);
-      votesThisRound.forEach(v => {
-        const n = parseInt(v, 10);
-        if (!isNaN(n) && n >= 1 && n <= totalCovers) counts[n - 1]++;
-      });
+function revealResults() {
+  fxReveal.currentTime = 0; fxReveal.play().catch(() => { });
+  const votesThisRound = state.votes[state.round - 1] || [];
+  const totalCovers = state.covers.length;
+  const counts = new Array(totalCovers).fill(0);
+  votesThisRound.forEach(v => {
+    const n = parseInt(v, 10);
+    if (!isNaN(n) && n >= 1 && n <= totalCovers) counts[n - 1]++;
+  });
 
-      const maxVotes = Math.max(...counts);
-      const winners = counts.map((c, i) => c === maxVotes ? i : null).filter(i => i !== null);
+  const maxVotes = Math.max(...counts);
+  const winners = counts.map((c, i) => c === maxVotes ? i : null).filter(i => i !== null);
 
-      // Destaque visual nas capas
-      const coverEls = Array.from(document.querySelectorAll('.cover'));
-      coverEls.forEach((el, idx) => {
-        el.style.transition = 'transform .45s, opacity .45s, box-shadow .45s';
-        if (winners.includes(idx)) {
-          el.style.transform = 'scale(1.06)';
-          el.style.boxShadow = '0 18px 50px rgba(255,179,58,0.14)';
-          el.style.opacity = '1';
-        } else {
-          el.style.opacity = '0.35';
-          el.style.transform = '';
-          el.style.boxShadow = '';
-        }
-      });
+  // Limpa os elementos antigos
+  centralWinnerCover.innerHTML = '';
 
-      // atualizar pontuação
-      const vencedoresRodada = [];
-      state.playerNames.forEach((nome, i) => {
-        const voto = parseInt(votesThisRound[i]);
-        if (winners.includes(voto - 1)) {
-          state.scores[nome] = (state.scores[nome] || 0) + 1;
-          vencedoresRodada.push(nome);
-        }
-      });
+  // Oculta o grid de capas
+  coversEl.classList.add('hidden');
 
-      resultsEl.style.display = 'flex';
-      let textoCapa = '';
-      if (maxVotes === 0) textoCapa = 'Nenhum voto válido nesta rodada.';
-      else if (winners.length === 1) textoCapa = `Capa vencedora: ${winners[0] + 1} com ${maxVotes} voto(s)!`;
-      else textoCapa = `Empate entre capas: ${winners.map(i => i + 1).join(', ')} (${maxVotes} voto(s) cada)`;
+  // Se houver um vencedor único (ou o primeiro de um empate)
+  if (winners.length > 0) {
+    const winnerIndex = winners[0];
+    const winnerUrl = state.covers[winnerIndex];
 
-      winnerText.textContent = textoCapa;
-      voteSummary.innerHTML = vencedoresRodada.length > 0
-        ? `🏆 Jogadores que pontuaram: <strong style="color:var(--accent)">${vencedoresRodada.join(', ')}</strong>`
-        : `Ninguém pontuou nesta rodada 😢`;
+    // Exibe a capa vencedora no centro
+    centralWinnerCover.innerHTML = `<img src="${winnerUrl}" alt="Capa Vencedora">`;
+    revealArea.style.display = 'flex'; // Exibe o novo container
+  } else {
+    // Ninguém pontuou, mas precisa exibir o revealArea para a mensagem
+    revealArea.style.display = 'flex';
+    winnerSummary.innerHTML = `Nenhum voto válido nesta rodada.`;
+  }
 
-      nextRoundBtn.style.display = 'inline-block';
-      showScoresBtn.style.display = 'inline-block';
-
-      renderScores();
+  // atualizar pontuação
+  const vencedoresRodada = [];
+  state.playerNames.forEach((nome, i) => {
+    const voto = parseInt(votesThisRound[i]);
+    if (winners.includes(voto - 1)) {
+      state.scores[nome] = (state.scores[nome] || 0) + 1;
+      vencedoresRodada.push(nome);
     }
+  });
+
+  // Atualiza o resumo de pontos (independente se houve capa vencedora)
+  if (vencedoresRodada.length > 0) {
+    winnerSummary.innerHTML = `🏆 Jogadores que pontuaram: <strong style="color:var(--accent)">${vencedoresRodada.join(', ')}</strong>`;
+  } else if (winners.length > 0) { // Se ninguém pontuou, mas houve votos
+     winnerSummary.innerHTML = `Ninguém pontuou nesta rodada 😢`;
+  }
+
+  // Exibe os botões Próxima Rodada e Ver Placar
+  resultsEl.style.display = 'flex';
+  nextRoundBtn.style.display = 'inline-block';
+  showScoresBtn.style.display = 'inline-block';
+
+  renderScores();
+}
 
     nextRoundBtn.addEventListener('click', () => {
       fxClick?.play().catch(() => { });
@@ -1064,7 +1115,6 @@
       // volta pra tela inicial e mantém nomes
       startScreen.style.display = 'block';
       gameArea.style.display = 'none';
-      setStatus('Pronto');
     });
 
     showScoresBtn.addEventListener('click', () => {
@@ -1114,7 +1164,6 @@
       }
       resultsEl.style.display = 'none';
       votePanel.style.display = 'none';
-      setStatus('Preparando nova partida...');
       setTimeout(nextRound, 500);
       stopConfete();
     }
